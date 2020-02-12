@@ -1,41 +1,56 @@
 package com.springboottest.app.service;
 
 import com.springboottest.app.model.User;
-import com.springboottest.app.repo.DaoImpl;
+import com.springboottest.app.repo.Dao;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ServDao implements Serv {
-    private DaoImpl dao;
+    private Dao dao;
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(ServDao.class);
 
     @Autowired
-    public ServDao(DaoImpl dao) {
+    public ServDao(Dao dao) {
         this.dao = dao;
     }
 
     public List<User> getAllUsers() {
-        return this.dao.getAllUsers();
+        LOGGER.info("Request to user service: Get all users");
+
+        return dao.getAllUsers();
     }
 
     @Override
     public User getUser(int id) {
+        LOGGER.info("Request to user service: Get " + id + " user");
+
         return dao.getUser(id);
     }
 
     @Override
-    public int addUser(User user) {
+    public User addUser(User user) {
+        LOGGER.info("Request to user service: Post " + user.toString());
+
         return dao.addUser(user);
     }
 
     @Override
     public int delete(int id) {
+        LOGGER.info("Request to user service: Delete " + id + " user");
+
         return dao.delete(id);
     }
 
     @Override
-    public int update(User user, int id) {
+    public User update(User user, int id) {
+        LOGGER.info("Request to user service: Update " + id + " user to " + user.toString());
+
         return dao.update(user, id);
     }
 }

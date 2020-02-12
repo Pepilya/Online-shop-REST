@@ -1,63 +1,68 @@
 package com.springboottest.app.controller;
 
 import com.springboottest.app.model.User;
-import com.springboottest.app.service.ServDao;
+import com.springboottest.app.service.Serv;
 
 import java.util.List;
 
-import io.swagger.annotations.ApiOperation;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 public class UserController {
-    private ServDao service;
+    private Serv service;
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     public UserController() {
     }
 
     @Autowired
-    public void setService(ServDao service) {
+    public void setService(Serv service) {
         this.service = service;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/app")
-    @ApiOperation(value = "View a list of available users", response = User.class)
+    @GetMapping("/app")
     List<User> getUsersList() {
+        LOGGER.info("Attempt to get all users");
+
         List<User> lst = service.getAllUsers();
-        System.out.println(lst);
         return lst;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/app/{id}")
-    @ApiOperation(value = "View a specific user", response = User.class)
+    @GetMapping("/app/{id}")
     User getUser(@PathVariable String id) {
+        LOGGER.info("Attempt to get " + id +  " users");
+
         int i = Integer.valueOf(id);
         return service.getUser(i);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/app")
-    @ApiOperation(value = "Create a specific user", response = Integer.class)
-    int addUser(@RequestBody User user) {
-        return service.addUser(user);
+    @PostMapping("/app")
+    User addUser(@RequestBody User user) {
+        LOGGER.info("Attempt to post " + user.getName() + " users");
+
+        service.addUser(user);
+        return user;
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/app/{id}")
-    @ApiOperation(value = "Update a specific user", response = Integer.class)
-    int updateUser(@PathVariable String id, @RequestBody User user) {
-        int result = 0;
+    @PutMapping("/app/{id}")
+    User updateUser(@PathVariable String id, @RequestBody User user) {
+        LOGGER.info("Attempt to update " + id + " users");
+
         int i = Integer.valueOf(id);
-        User other = service.getUser(i);
-        if (other != null)
-            result = service.update(user, i);
-        return result;
+        User toChange = service.getUser(i);
+        if (toChange != null)
+            user = service.update(user, i);
+        return user;
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/app/{id}")
-    @ApiOperation(value = "Delete a specific user", response = Integer.class)
+    @DeleteMapping("/app/{id}")
     int deleteUser(@PathVariable String id) {
+        LOGGER.info("Attempt to delete " + id + " users");
+
         int i = Integer.valueOf(id);
         return service.delete(i);
     }

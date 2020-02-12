@@ -21,5 +21,5 @@ services:
     links:
       - postgres
     ports:
-      - 8088:8088
+      - 8080:8080
     restart: always
