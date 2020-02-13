@@ -1,4 +1,4 @@
-!.mvn/wrapper/maven-wrapper.jar
+
 !**/src/main/**
 !**/src/test/**
 
@@ -10,6 +10,10 @@
 .settings
 .springBeans
 .sts4-cache
+.mvn
+mvnw
+mvnw.cmd
+
 
 ### IntelliJ IDEA ###
 .idea
@@ -17,7 +21,8 @@
 *.iml
 *.ipr
 HELP.md
-target 
+target
+*.log
 
 ### NetBeans ###
 /nbproject/private/

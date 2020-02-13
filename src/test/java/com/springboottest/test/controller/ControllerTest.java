@@ -1,5 +1,6 @@
 package com.springboottest.test.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboottest.app.controller.UserController;
 import com.springboottest.app.model.User;
@@ -13,11 +14,11 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
+import static org.hamcrest.CoreMatchers.*;
 
 import org.mockito.Mockito;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,12 +30,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
 @RunWith(SpringRunner.class)
 public class ControllerTest {
+
 
     private MockMvc mvc;
     @Mock
@@ -50,22 +52,23 @@ public class ControllerTest {
     }
 
     @Test
-    public void getAllUsers() throws Exception {
+    public void getAllUsers_whenUsersExists_thenReturnAndOk() throws Exception {
         User user1 = new User(3, "Maksim", "maksim@mail.com");
         User user2 = new User(1, "Sasha", "sasha@mail.com");
-        List <User> list = new ArrayList<>();
-        list.add(user1);
-        list.add(user2);
+        List <User> list = Arrays.asList(user1, user2);
         Mockito.when(service.getAllUsers()).thenReturn(list);
-        mvc.perform(MockMvcRequestBuilders.get("/app"))
-                .andExpect(status().isOk());
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/users"))
+                .andExpect(status().isOk()).andReturn();
+        List<User> resultList = new ObjectMapper().readValue(result.getResponse().getContentAsString(), new TypeReference<List<User>>(){});
+        assertThat(resultList.size(), is(2));
+        assertThat(resultList, is(list));
     }
 
     @Test
-    public void getUser() throws Exception {
+    public void getUser_whenUserExist_thenReturnAndOk() throws Exception {
         User user1 = new User(1, "Maksim", "maksim@mail.com");
         when(service.getUser(user1.getId())).thenReturn(user1);
-        mvc.perform(MockMvcRequestBuilders.get("/app/1").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(MockMvcRequestBuilders.get("/users/1").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(user1.getId()))
                 .andExpect(jsonPath("$.name").value(user1.getName()))
@@ -73,46 +76,46 @@ public class ControllerTest {
         verify(service).getUser(1);
     }
     @Test
-    public void addUser() throws Exception {
+    public void addUser_whenUserNotExist_thenReturnUserAndOk() throws Exception {
         User user = new User(1,"Ilia","ilia@mail.com");
         when(service.addUser(user)).thenReturn(user);
-        MvcResult result = mvc.perform(post("/app")
+        mvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsBytes(user)))
-                .andReturn();
-        int status = result.getResponse().getStatus();
-        assertEquals("Incorrect Response Status", HttpStatus.OK.value(), status);
-        User resultUser = new ObjectMapper().readValue(result.getResponse().getContentAsString(), User.class);
-        assertEquals(user.getId(), resultUser.getId());
-        assertEquals(user.getName(), resultUser.getName());
-        assertEquals(user.getEmail(), resultUser.getEmail());
-
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(user.getId()))
+                .andExpect(jsonPath("$.name").value(user.getName()))
+                .andExpect(jsonPath("$.email").value(user.getEmail()));
+        verify(service).addUser(user);
     }
 
     @Test
-    public void updateItem() throws Exception {
+    public void updateUser_whenUserExist_thenReturnUserAndOk() throws Exception {
         User user = new User(1,"Ilia","ilia@mail.com");
         when(service.update(user, user.getId())).thenReturn(user);
-        MvcResult result = mvc.perform(MockMvcRequestBuilders.put("/app/1")
+        mvc.perform(MockMvcRequestBuilders.put("/users/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsBytes(user)))
-                .andReturn();
-        int status = result.getResponse().getStatus();
-        assertEquals("Incorrect Response Status", HttpStatus.OK.value(), status);
-        User resultUser = new ObjectMapper().readValue(result.getResponse().getContentAsString(), User.class);
-        assertEquals(user.getId(), resultUser.getId());
-        assertEquals(user.getName(), resultUser.getName());
-        assertEquals(user.getEmail(), resultUser.getEmail());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(user.getId()))
+                .andExpect(jsonPath("$.name").value(user.getName()))
+                .andExpect(jsonPath("$.email").value(user.getEmail()));
+        verify(service).update(user, user.getId());
     }
 
     @Test
-    public void deleteItem() throws Exception{
-        when(service.delete(1)).thenReturn(1);
-        mvc.perform(MockMvcRequestBuilders.delete("/app/1")
+    public void deleteUser_whenUserExist_thenReturnUserAndOk() throws Exception{
+        User user = new User(1,"Ilia","ilia@mail.com");
+        when(service.delete(user.getId())).thenReturn(user);
+        mvc.perform(MockMvcRequestBuilders.delete("/users/1")
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(user.getId()))
+                .andExpect(jsonPath("$.name").value(user.getName()))
+                .andExpect(jsonPath("$.email").value(user.getEmail()));
+        verify(service).delete(user.getId());
     }
 
 }

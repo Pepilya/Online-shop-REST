@@ -8,6 +8,6 @@ public interface Serv {
     List<User> getAllUsers();
     User getUser(int id);
     User addUser(User user);
-    int delete(int id);
+    User delete(int id);
     User update(User user, int id);
 }

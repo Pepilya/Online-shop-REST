@@ -10,13 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ServDao implements Serv {
-    private Dao dao;
+public class ServiceImp implements Serv {
+    final private Dao dao;
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(ServDao.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(ServiceImp.class);
 
     @Autowired
-    public ServDao(Dao dao) {
+    public ServiceImp(Dao dao) {
         this.dao = dao;
     }
 
@@ -41,7 +41,7 @@ public class ServDao implements Serv {
     }
 
     @Override
-    public int delete(int id) {
+    public User delete(int id) {
         LOGGER.info("Request to user service: Delete " + id + " user");
 
         return dao.delete(id);

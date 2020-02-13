@@ -3,7 +3,7 @@ package com.springboottest.test.service;
 import com.springboottest.app.model.User;
 
 import com.springboottest.app.repo.Dao;
-import com.springboottest.app.service.ServDao;
+import com.springboottest.app.service.ServiceImp;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -12,7 +12,7 @@ import static org.mockito.Mockito.*;
 
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -26,44 +26,44 @@ public class ServiceTest {
     private Dao dao;
 
     @InjectMocks
-    private ServDao service;
+    private ServiceImp service;
 
     @Test
-    public void getUser() throws Exception {
+    public void getUser_whenUserExist_thenReturnAndOk() throws Exception {
         User exp = new User(1, "Maksim", "maksim@mail.com");
-        when(dao.getUser(3)).thenReturn(exp);
-        assertThat(service.getUser(3), is(notNullValue()));
+        when(dao.getUser(exp.getId())).thenReturn(exp);
+        assertThat(service.getUser(exp.getId()), is(notNullValue()));
+        assertThat(service.getUser(exp.getId()), is(exp));
     }
 
     @Test
-    public void getAllUser() throws Exception{
+    public void getAllUsers_whenUsersExists_thenReturnAndOk()  throws Exception{
         User user1 = new User(1, "Maksim", "maksim@mail.com");
         User user2 = new User(3, "Sasha", "sasha@mail.com");
-        List <User> list = new ArrayList<>();
-        list.add(user1);
-        list.add(user2);
+        List <User> list = Arrays.asList(user1, user2);
         when(dao.getAllUsers()).thenReturn(list);
         assertThat(service.getAllUsers(), is(list));
         assertThat(service.getAllUsers().size(), is(2));
     }
 
     @Test
-    public void addUser() throws Exception{
+    public void addUser_whenUserNotExist_thenReturnUserAndOk() throws Exception{
         User user = new User(1, "Maksim", "maksim@mail.com");
         when(dao.addUser(user)).thenReturn(user);
         assertThat(service.addUser(user), is(user));
     }
 
     @Test
-    public void updateUser() throws Exception{
+    public void updateUser_whenUserExist_thenReturnUserAndOk() throws Exception{
         User user1 = new User(1, "Maksim", "maksim@mail.com");
         User user2 = new User(2, "Dima", "dima@mail.com");
         when(dao.update(user2, user1.getId())).thenReturn(user2);
         assertThat(service.update(user2, user1.getId()), is(user2));
     }
     @Test
-    public void deleteUser() throws Exception{
-        when(dao.delete(1)).thenReturn(1);
-        assertThat(service.delete(1), is(1));
+    public void deleteUser_whenUserExist_thenReturnUserAndOk() throws Exception{
+        User user = new User(1,"Ilia","ilia@mail.com");
+        when(dao.delete(user.getId())).thenReturn(user);
+        assertThat(service.delete(user.getId()), is(user));
     }
 }

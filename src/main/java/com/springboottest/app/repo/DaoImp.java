@@ -11,13 +11,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class DaoImpl implements Dao {
-    private JdbcTemplate jdbcTemplate;
+public class DaoImp implements Dao {
+    final private JdbcTemplate jdbcTemplate;
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(DaoImpl.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(DaoImp.class);
 
     @Autowired
-    public DaoImpl(JdbcTemplate jdbcTemplate) {
+    public DaoImp(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -44,29 +44,29 @@ public class DaoImpl implements Dao {
     public User addUser(User user) {
         LOGGER.info("Request to DB: Post " + user.toString());
 
-        String sql = "Insert into user_table (user_id, user_name, user_email) values (?, ?, ?)";
-        jdbcTemplate.update(sql, new Object[]{user.getId(), user.getName(), user.getEmail()});
-        return user;
+        UserMapper userMapper = new UserMapper();
+        String sql = "Insert into user_table (user_name, user_email) values (?, ?) Returning user_id, user_name, user_email";
+        Object[] args = new Object[]{user.getName(), user.getEmail()};
+        return jdbcTemplate.queryForObject(sql, args, userMapper);
     }
 
     @Override
     public User update(User user, int id) {
         LOGGER.info("Request to DB: Update " + id + " user to " + user.toString());
 
-        String sql = "Update user_table set user_id=?, user_name=?, user_email=? where user_id=?";
-        Object[] args = new Object[]{user.getId(), user.getName(), user.getEmail(), id};
-        jdbcTemplate.update(sql, args);
-        return user;
+        UserMapper userMapper = new UserMapper();
+        String sql = "Update user_table set user_name=?, user_email=? where user_id=? Returning user_id, user_name, user_email";
+        Object[] args = new Object[]{user.getName(), user.getEmail(), id};
+        return jdbcTemplate.queryForObject(sql, args, userMapper);
     }
 
     @Override
-    public int delete(int id) {
+    public User delete(int id) {
         LOGGER.info("Request to DB: Delete " + id + " user");
 
-        int result;
-        String sql = "Delete from user_table where user_id=?";
+        UserMapper userMapper = new UserMapper();
+        String sql = "Delete from user_table where user_id=? Returning user_id, user_name, user_email";
         Object[] args = new Object[]{id};
-        result = jdbcTemplate.update(sql, args);
-        return result;
+        return jdbcTemplate.queryForObject(sql, args, userMapper);
     }
 }
