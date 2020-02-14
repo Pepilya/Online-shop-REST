@@ -11,13 +11,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class DaoImp implements Dao {
-    final private JdbcTemplate jdbcTemplate;
+public class DaoImpl implements Dao {
+    private final JdbcTemplate jdbcTemplate;
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(DaoImp.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(DaoImpl.class);
 
     @Autowired
-    public DaoImp(JdbcTemplate jdbcTemplate) {
+    public DaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -26,7 +26,7 @@ public class DaoImp implements Dao {
         LOGGER.info("Request to DB: Get all users");
 
         UserMapper userMapper = new UserMapper();
-        String sql = "Select * from user_table";
+        String sql = "SELECT * FROM user_table";
         return jdbcTemplate.query(sql, userMapper);
     }
 
@@ -35,7 +35,7 @@ public class DaoImp implements Dao {
         LOGGER.info("Request to DB: Get " + id + " user");
 
         UserMapper userMapper = new UserMapper();
-        String sql = "Select * from user_table where user_id=?";
+        String sql = "SELECT * FROM user_table WHERE user_id=?";
         Object[] args = new Object[]{id};
         return jdbcTemplate.queryForObject(sql, args, userMapper);
     }
@@ -45,7 +45,7 @@ public class DaoImp implements Dao {
         LOGGER.info("Request to DB: Post " + user.toString());
 
         UserMapper userMapper = new UserMapper();
-        String sql = "Insert into user_table (user_name, user_email) values (?, ?) Returning user_id, user_name, user_email";
+        String sql = "INSERT INTO user_table (user_name, user_email) VALUES (?, ?) RETURNING user_id, user_name, user_email";
         Object[] args = new Object[]{user.getName(), user.getEmail()};
         return jdbcTemplate.queryForObject(sql, args, userMapper);
     }
@@ -55,7 +55,7 @@ public class DaoImp implements Dao {
         LOGGER.info("Request to DB: Update " + id + " user to " + user.toString());
 
         UserMapper userMapper = new UserMapper();
-        String sql = "Update user_table set user_name=?, user_email=? where user_id=? Returning user_id, user_name, user_email";
+        String sql = "UPDATE user_table SET user_name=?, user_email=? WHERE user_id=? RETURNING user_id, user_name, user_email";
         Object[] args = new Object[]{user.getName(), user.getEmail(), id};
         return jdbcTemplate.queryForObject(sql, args, userMapper);
     }
@@ -65,7 +65,7 @@ public class DaoImp implements Dao {
         LOGGER.info("Request to DB: Delete " + id + " user");
 
         UserMapper userMapper = new UserMapper();
-        String sql = "Delete from user_table where user_id=? Returning user_id, user_name, user_email";
+        String sql = "DELETE FROM user_table WHERE user_id=? RETURNING user_id, user_name, user_email";
         Object[] args = new Object[]{id};
         return jdbcTemplate.queryForObject(sql, args, userMapper);
     }

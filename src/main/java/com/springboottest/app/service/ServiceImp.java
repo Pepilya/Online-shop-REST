@@ -2,6 +2,7 @@ package com.springboottest.app.service;
 
 import com.springboottest.app.model.User;
 import com.springboottest.app.repo.Dao;
+
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -10,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ServiceImp implements Serv {
-    final private Dao dao;
+public class ServiceImp implements UserService {
+    private final Dao dao;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ServiceImp.class);
 

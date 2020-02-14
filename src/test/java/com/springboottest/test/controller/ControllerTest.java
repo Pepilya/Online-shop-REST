@@ -6,7 +6,7 @@ import com.springboottest.app.controller.UserController;
 import com.springboottest.app.model.User;
 
 
-import com.springboottest.app.service.Serv;
+import com.springboottest.app.service.UserService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +24,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,7 +41,7 @@ public class ControllerTest {
 
     private MockMvc mvc;
     @Mock
-    private Serv service;
+    private UserService service;
 
     @InjectMocks
     private UserController controller;
@@ -55,11 +56,12 @@ public class ControllerTest {
     public void getAllUsers_whenUsersExists_thenReturnAndOk() throws Exception {
         User user1 = new User(3, "Maksim", "maksim@mail.com");
         User user2 = new User(1, "Sasha", "sasha@mail.com");
-        List <User> list = Arrays.asList(user1, user2);
+        List<User> list = Arrays.asList(user1, user2);
         Mockito.when(service.getAllUsers()).thenReturn(list);
         MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/users"))
                 .andExpect(status().isOk()).andReturn();
-        List<User> resultList = new ObjectMapper().readValue(result.getResponse().getContentAsString(), new TypeReference<List<User>>(){});
+        List<User> resultList = new ObjectMapper().readValue(result.getResponse().getContentAsString(), new TypeReference<List<User>>() {
+        });
         assertThat(resultList.size(), is(2));
         assertThat(resultList, is(list));
     }
@@ -75,9 +77,10 @@ public class ControllerTest {
                 .andExpect(jsonPath("$.email").value(user1.getEmail()));
         verify(service).getUser(1);
     }
+
     @Test
     public void addUser_whenUserNotExist_thenReturnUserAndOk() throws Exception {
-        User user = new User(1,"Ilia","ilia@mail.com");
+        User user = new User(1, "Ilia", "ilia@mail.com");
         when(service.addUser(user)).thenReturn(user);
         mvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -92,7 +95,7 @@ public class ControllerTest {
 
     @Test
     public void updateUser_whenUserExist_thenReturnUserAndOk() throws Exception {
-        User user = new User(1,"Ilia","ilia@mail.com");
+        User user = new User(1, "Ilia", "ilia@mail.com");
         when(service.update(user, user.getId())).thenReturn(user);
         mvc.perform(MockMvcRequestBuilders.put("/users/1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -106,8 +109,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void deleteUser_whenUserExist_thenReturnUserAndOk() throws Exception{
-        User user = new User(1,"Ilia","ilia@mail.com");
+    public void deleteUser_whenUserExist_thenReturnUserAndOk() throws Exception {
+        User user = new User(1, "Ilia", "ilia@mail.com");
         when(service.delete(user.getId())).thenReturn(user);
         mvc.perform(MockMvcRequestBuilders.delete("/users/1")
                 .accept(MediaType.APPLICATION_JSON))

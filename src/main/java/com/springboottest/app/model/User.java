@@ -9,7 +9,7 @@ public class User {
     public User() {
     }
 
-    public User(int id, String name, String email){
+    public User(int id, String name, String email) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -40,7 +40,7 @@ public class User {
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         int result = 1;
         final int prime = 31;
         result = prime * result + id;
@@ -50,8 +50,8 @@ public class User {
     }
 
     @Override
-    public boolean equals(Object object){
-        User other = (User)object;
+    public boolean equals(Object object) {
+        User other = (User) object;
         if (this == object)
             return true;
         else if (object == null)
@@ -67,7 +67,7 @@ public class User {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "User id: " + id + " User name: " + name + " User email: " + email;
     }
 }

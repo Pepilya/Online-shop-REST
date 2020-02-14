@@ -1,8 +1,10 @@
 package com.springboottest.app.repo;
 
 import com.springboottest.app.model.User;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import org.springframework.jdbc.core.RowMapper;
 
 public class UserMapper implements RowMapper<User> {

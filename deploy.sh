@@ -2,4 +2,4 @@
 echo "Building application by mvn"
 mvn clean install
 echo "Building image and run container"
-docker-compose up --build
+docker-compose up -d --build

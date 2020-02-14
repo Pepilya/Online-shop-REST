@@ -1,7 +1,7 @@
 package com.springboottest.app.controller;
 
 import com.springboottest.app.model.User;
-import com.springboottest.app.service.Serv;
+import com.springboottest.app.service.UserService;
 
 import java.util.List;
 
@@ -14,27 +14,27 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
-    final private Serv service;
+    private final UserService service;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public UserController(Serv service) {
+    public UserController(UserService service) {
         this.service = service;
     }
 
     @GetMapping("/users")
     ResponseEntity<List<User>> getUsersList() {
         LOGGER.info("Attempt to get all users");
-        List <User> list = service.getAllUsers();
-        return new ResponseEntity<List<User>>(list, HttpStatus.OK);
+        List<User> list = service.getAllUsers();
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("/users/{id}")
     ResponseEntity<User> getUser(@PathVariable int id) {
-        LOGGER.info("Attempt to get " + id +  " users");
+        LOGGER.info("Attempt to get " + id + " users");
         User resultUser = service.getUser(id);
-        return new ResponseEntity<User>(resultUser, HttpStatus.OK);
+        return ResponseEntity.ok(resultUser);
     }
 
     @PostMapping("/users")
@@ -56,6 +56,6 @@ public class UserController {
     ResponseEntity<User> deleteUser(@PathVariable int id) {
         LOGGER.info("Attempt to delete " + id + " users");
         User resultUser = service.delete(id);
-        return new ResponseEntity<User>(resultUser, HttpStatus.OK);
+        return ResponseEntity.ok(resultUser);
     }
 }
