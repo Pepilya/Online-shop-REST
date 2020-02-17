@@ -54,9 +54,23 @@ public class DaoImpl implements Dao {
     public User update(User user, int id) {
         LOGGER.info("Request to DB: Update " + id + " user to " + user.toString());
 
+        String sql;
+        Object[] args;
+
+        if (user.getName() != null && user.getEmail() != null) {
+            sql = "UPDATE user_table SET user_name=?, user_email=? WHERE user_id=? RETURNING user_id, user_name, user_email";
+            args = new Object[]{user.getName(), user.getEmail(), id};
+        } else if (user.getName() != null) {
+            sql = "UPDATE user_table SET user_name=? WHERE user_id=? RETURNING user_id, user_name, user_email";
+            args = new Object[]{user.getName(), id};
+        } else if (user.getEmail() != null) {
+            sql = "UPDATE user_table SET user_email=? WHERE user_id=? RETURNING user_id, user_name, user_email";
+            args = new Object[]{user.getEmail(), id};
+        } else {
+            sql = "SELECT * FROM user_table WHERE user_id=?";
+            args = new Object[]{id};
+        }
         UserMapper userMapper = new UserMapper();
-        String sql = "UPDATE user_table SET user_name=?, user_email=? WHERE user_id=? RETURNING user_id, user_name, user_email";
-        Object[] args = new Object[]{user.getName(), user.getEmail(), id};
         return jdbcTemplate.queryForObject(sql, args, userMapper);
     }
 

@@ -3,7 +3,7 @@ package com.springboottest.test.service;
 import com.springboottest.app.model.User;
 
 import com.springboottest.app.repo.Dao;
-import com.springboottest.app.service.ServiceImpl;
+import com.springboottest.app.service.UserServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -27,7 +27,7 @@ public class ServiceTest {
     private Dao dao;
 
     @InjectMocks
-    private ServiceImpl service;
+    private UserServiceImpl service;
 
     @Test
     public void getUser_whenUserExist_thenReturnAndOk() throws Exception {

@@ -11,13 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ServiceImpl implements UserService {
+public class UserServiceImpl implements UserService {
     private final Dao dao;
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(ServiceImpl.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
-    public ServiceImpl(Dao dao) {
+    public UserServiceImpl(Dao dao) {
         this.dao = dao;
     }
 

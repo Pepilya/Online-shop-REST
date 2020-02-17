@@ -23,6 +23,7 @@ mvnw.cmd
 HELP.md
 target
 *.log
+.DS_Store
 
 ### NetBeans ###
 /nbproject/private/
