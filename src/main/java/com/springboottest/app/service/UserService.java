@@ -5,13 +5,14 @@ import com.springboottest.app.model.User;
 import java.util.List;
 
 public interface UserService {
+
     List<User> getAllUsers();
 
-    User getUser(int id);
+    User getUserById(int id);
 
-    User addUser(User user);
+    User addUser(User user, List <Integer> roles);
 
-    User delete(int id);
+    User update(User user, int id, List<Integer> roles);
 
-    User update(User user, int id);
+    Integer delete(int id);
 }

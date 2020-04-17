@@ -1,0 +1,67 @@
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboottest.app.mappers.UserMapper">
+
+    <resultMap id="UserResultMap" type="user">
+        <id property="id" column="user_id" javaType="_int"/>
+        <result property="login" column="user_login" javaType="String"/>
+        <result property="password" column="user_password" javaType="String"/>
+        <collection property="listRoles" ofType="Role">
+            <id property="id" column="role_id" javaType="_int"/>
+            <result property="name" column="role_name" javaType="string"/>
+        </collection>
+    </resultMap>
+
+    <select id="getAllUsers" resultMap="UserResultMap">
+        SELECT users.id AS user_id,
+        users.login AS user_login,
+        users.password AS user_password,
+        roles.id AS role_id,
+        roles.name AS role_name
+         FROM users
+         LEFT JOIN user_role
+                ON users.id = user_role.user_id
+         LEFT JOIN roles
+                ON roles.id = user_role.role_id
+    </select>
+
+    <select id="getUserById" resultMap="UserResultMap">
+        SELECT users.id AS user_id,
+        users.login AS user_login,
+        users.password AS user_password,
+        roles.id AS role_id,
+        roles.name AS role_name
+         FROM users
+         LEFT JOIN user_role
+                ON users.id = user_role.user_id
+         LEFT JOIN roles
+                ON roles.id = user_role.role_id
+        WHERE users.id = #{id};
+    </select>
+
+    <select id="addUser" resultType="_int">
+        INSERT INTO users (login, password)
+        VALUES (#{login}, #{password}) RETURNING id;
+    </select>
+
+    <insert id="addRoleToUser">
+        <foreach collection="roles" item="roleId">
+            INSERT INTO user_role
+            VALUES (#{userId}, #{roleId});
+        </foreach>
+    </insert>
+
+    <select id="updateUser" resultType="_int">
+        <trim prefix="UPDATE users SET" suffix="WHERE id = #{userId} RETURNING id;">
+            <if test="user.login != null"> login = #{user.login}, </if>
+            <if test="user.password != null"> password = #{user.password}</if>
+        </trim>
+    </select>
+
+    <select id="deleteUser" resultType="_int">
+        DELETE FROM users WHERE id = #{userId} RETURNING id;
+    </select>
+    
+    <delete id="deleteRole">
+        DELETE FROM user_role WHERE user_id = #{userId};
+    </delete>
+</mapper>

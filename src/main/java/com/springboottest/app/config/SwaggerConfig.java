@@ -1,4 +1,4 @@
-package com.springboottest.app.swagger;
+package com.springboottest.app.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +22,7 @@ class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2).select()
                 .apis(RequestHandlerSelectors
                         .basePackage("com.springboottest.app"))
-                .paths(regex("/users.*"))
+                .paths(regex("/.*"))
                 .build().apiInfo(apiEndPointsInfo());
     }
 

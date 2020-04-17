@@ -1,57 +1,72 @@
 package com.springboottest.app.service;
 
+import com.springboottest.app.exceptions.EntityDoesNotExist;
+import com.springboottest.app.mappers.UserMapper;
 import com.springboottest.app.model.User;
-import com.springboottest.app.repo.Dao;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final Dao dao;
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+    private final UserMapper userMapper;
+    private final RoleService roleService;
 
     @Autowired
-    public UserServiceImpl(Dao dao) {
-        this.dao = dao;
+    public UserServiceImpl(UserMapper userMapper, RoleService roleService) {
+        this.userMapper = userMapper;
+        this.roleService = roleService;
     }
 
+    @Override
     public List<User> getAllUsers() {
-        LOGGER.info("Request to user service: Get all users");
-
-        return dao.getAllUsers();
+        return userMapper.getAllUsers();
     }
 
     @Override
-    public User getUser(int id) {
-        LOGGER.info("Request to user service: Get " + id + " user");
-
-        return dao.getUser(id);
+    public User getUserById(int id) {
+        User user = userMapper.getUserById(id);
+        if (user == null)
+            throw new EntityDoesNotExist();
+        return user;
     }
 
     @Override
-    public User addUser(User user) {
-        LOGGER.info("Request to user service: Post " + user.toString());
-
-        return dao.addUser(user);
+    public User addUser(User user,  List <Integer> roles) {
+        if (roles != null && !roles.stream().allMatch(s -> roleService.getRoleById(s) != null))
+            throw new EntityDoesNotExist();
+        int userId = userMapper.addUser(user.getLogin(), user.getPassword());
+        userMapper.addRoleToUser(userId, roles);
+        return getUserById(userId);
     }
 
     @Override
-    public User delete(int id) {
-        LOGGER.info("Request to user service: Delete " + id + " user");
+    public User update(User user, int id, List<Integer> roles) {
 
-        return dao.delete(id);
+        if (!isEntityExits(id, roles))
+            throw new EntityDoesNotExist();
+
+        int userId = userMapper.updateUser(user, id);
+        if (roles != null) {
+            userMapper.deleteRole(userId);
+            userMapper.addRoleToUser(userId, roles);
+        }
+        return getUserById(userId);
+    }
+
+    private boolean isEntityExits(int id, List<Integer> roles) {
+        boolean isRoleExits = true;
+        if ((roles != null && !roles.stream().allMatch(s -> roleService.getRoleById(s) != null))
+                || getUserById(id) == null)
+            isRoleExits = false;
+        return isRoleExits;
     }
 
     @Override
-    public User update(User user, int id) {
-        LOGGER.info("Request to user service: Update " + id + " user to " + user.toString());
-
-        return dao.update(user, id);
+    public Integer delete(int id) {
+        return userMapper.deleteUser(id);
     }
 }

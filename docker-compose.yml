@@ -2,14 +2,17 @@ version: "3"
 services:
   postgres:
     container_name: test_db
-    image: postgres:12
+    image: postgres:11.3
     environment:
       POSTGRES_DB: test
+#      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
     volumes:
-      - ${HOME}/Volumes5/docker/postgres:/var/lib/postgresql/data
+      - ${HOME}/Volumes/docker/postgres:/var/lib/postgresql/data
     restart: always
   application:
-    container_name: test_app
+    container_name: test_api
     image: test
     build:
       context: ./
@@ -17,5 +20,6 @@ services:
     depends_on:
       - postgres
     ports:
-      - 8080:8080
+      - "8555:8555"
+      - "8666:8666"
     restart: always
