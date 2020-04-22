@@ -14,7 +14,8 @@
     </typeAliases>
 
     <mappers>
-        <mapper resource="mappers/UserMapper.xml"/>
-        <mapper resource="mappers/RoleMapper.xml"/>
+        <mapper resource="mappers/AdminMapper.xml"/>
+        <mapper resource="mappers/EditorMapper.xml"/>
+        <mapper resource="mappers/GuestMapper.xml"/>
     </mappers>
 </configuration>

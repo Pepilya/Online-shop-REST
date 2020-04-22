@@ -1,7 +1,7 @@
 package com.springboottest.app.model;
 
-import com.springboottest.app.validators.RoleValid;
 import lombok.Data;
+
 import javax.validation.constraints.NotNull;
 import java.util.List;
 

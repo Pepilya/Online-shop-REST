@@ -1,5 +1,5 @@
 <!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.springboottest.app.mappers.UserMapper">
+<mapper namespace="com.springboottest.app.mappers.AdminMapper">
 
     <resultMap id="UserResultMap" type="user">
         <id property="id" column="user_id" javaType="_int"/>
@@ -50,6 +50,10 @@
         </foreach>
     </insert>
 
+    <insert id="createUserDeposit">
+        INSERT INTO deposit (user_id) VALUES (#{userId});
+    </insert>
+
     <select id="updateUser" resultType="_int">
         <trim prefix="UPDATE users SET" suffix="WHERE id = #{userId} RETURNING id;">
             <if test="user.login != null"> login = #{user.login}, </if>
@@ -61,7 +65,32 @@
         DELETE FROM users WHERE id = #{userId} RETURNING id;
     </select>
     
-    <delete id="deleteRole">
+    <delete id="deleteRolesFromUser">
         DELETE FROM user_role WHERE user_id = #{userId};
     </delete>
+
+    <select id="addRole" resultType="role">
+        INSERT INTO roles (name)
+        VALUES (#{name}) RETURNING *;
+    </select>
+
+    <select id="getRoleById" resultType="role">
+        SELECT * FROM roles WHERE id = #{roleId};
+    </select>
+
+    <select id="deleteRole" resultType="role">
+        DELETE FROM roles WHERE id = #{roleId} RETURNING *;
+    </select>
+
+    <select id="guestRoleExits" resultType="_boolean">
+        SELECT CASE WHEN exists
+            (SELECT * FROM user_role
+                        LEFT JOIN roles ON user_role.role_id = roles.id
+            WHERE user_role.user_id = #{userId} AND roles.name = 'GUEST')
+        THEN TRUE
+        ELSE FALSE
+        END;
+
+    </select>
+
 </mapper>
