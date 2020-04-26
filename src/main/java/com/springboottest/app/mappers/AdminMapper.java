@@ -1,7 +1,7 @@
 package com.springboottest.app.mappers;
 
 import com.springboottest.app.model.Role;
-import com.springboottest.app.model.User;
+import com.springboottest.app.model.CustomUser;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
@@ -11,15 +11,17 @@ import java.util.List;
 @Mapper
 public interface AdminMapper {
 
-    List <User> getAllUsers();
+    List <CustomUser> getAllUsers();
 
-    User getUserById(int id);
+    CustomUser getUserById(int id);
+
+    CustomUser getUserByLogin(String login);
 
     int addUser(String login, String password);
 
     void addRoleToUser(int userId, List<Integer> roles);
 
-    int updateUser(User user, int userId);
+    int updateUser(CustomUser user, int userId);
 
     Integer deleteUser(int userId);
 

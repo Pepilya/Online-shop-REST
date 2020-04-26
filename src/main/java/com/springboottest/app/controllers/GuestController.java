@@ -8,6 +8,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import static com.springboottest.app.config.JwtFilter.AUTH_TOKEN;
+
 
 @RestController
 @Validated
@@ -19,32 +21,38 @@ public class GuestController {
     private final EditorService editorService;
 
     @PutMapping("/deposit")
-    public void changeDeposit(@RequestParam int guestId, @RequestParam int sumDeposit) {
+    public void changeDeposit(@RequestHeader(AUTH_TOKEN) String token,
+                              @RequestParam int guestId, @RequestParam int sumDeposit) {
         guestService.changeDeposit(guestId, sumDeposit);
     }
     @GetMapping("/product")
-    public List<Product> getListOfProducts(@RequestParam(required = false) String searchQuery,
+    public List<Product> getListOfProducts(@RequestHeader(AUTH_TOKEN) String token,
+                                           @RequestParam(required = false) String searchQuery,
                                            @RequestParam (required = false) Integer minPrice,
                                            @RequestParam (required = false) Integer maxPrice) {
         return editorService.getListOfProducts(searchQuery, minPrice, maxPrice);
     }
     @PostMapping("/product")
-    public int takeProduct(@RequestParam int guestId, @RequestParam int productId) {
+    public int takeProduct(@RequestHeader(AUTH_TOKEN) String token,
+                           @RequestParam int guestId, @RequestParam int productId) {
         return guestService.takeProduct(guestId, productId);
     }
 
     @PutMapping("/product/{itemId}")
-    public void declineItemFromBasket(@RequestParam int guestId, @PathVariable Integer itemId) {
+    public void declineItemFromBasket(@RequestHeader(AUTH_TOKEN) String token,
+                                      @RequestParam int guestId, @PathVariable Integer itemId) {
         guestService.declineItemFromBasket(guestId, itemId);
     }
 
     @PutMapping("/product")
-    public void declineAllBasket(@RequestParam int guestId) {
+    public void declineAllBasket(@RequestHeader(AUTH_TOKEN) String token,
+                                 @RequestParam int guestId) {
         guestService.declineAllBasket(guestId);
     }
 
     @PutMapping("/basket")
-    public void payBasket(@RequestParam int guestId) {
+    public void payBasket(@RequestHeader(AUTH_TOKEN) String token,
+                          @RequestParam int guestId) {
         guestService.payBasket(guestId);
     }
 }

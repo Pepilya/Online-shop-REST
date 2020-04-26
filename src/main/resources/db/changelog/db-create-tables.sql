@@ -3,7 +3,7 @@
 CREATE TABLE users
 (
     id       SERIAL UNIQUE PRIMARY KEY NOT NULL,
-    login    TEXT                      NOT NULL,
+    login    TEXT   UNIQUE             NOT NULL,
     password TEXT                      NOT NULL
 );
 

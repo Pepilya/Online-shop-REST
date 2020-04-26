@@ -3,7 +3,7 @@ package com.springboottest.app.service;
 import com.springboottest.app.exceptions.EntityDoesNotExist;
 import com.springboottest.app.mappers.AdminMapper;
 import com.springboottest.app.model.Role;
-import com.springboottest.app.model.User;
+import com.springboottest.app.model.CustomUser;
 
 import java.util.List;
 
@@ -20,20 +20,20 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public List<CustomUser> getAllUsers() {
         return adminMapper.getAllUsers();
     }
 
     @Override
-    public User getUserById(int id) {
-        User user = adminMapper.getUserById(id);
+    public CustomUser getUserById(int id) {
+        CustomUser user = adminMapper.getUserById(id);
         if (user == null)
             throw new EntityDoesNotExist();
         return user;
     }
 
     @Override
-    public User addUser(User user,  List <Integer> roles) {
+    public CustomUser addUser(CustomUser user, List <Integer> roles) {
         if (roles != null && !roles.stream().allMatch(s -> getRoleById(s) != null))
             throw new EntityDoesNotExist();
         int userId = adminMapper.addUser(user.getLogin(), user.getPassword());
@@ -44,7 +44,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public User update(User user, int id, List<Integer> roles) {
+    public CustomUser update(CustomUser user, int id, List<Integer> roles) {
 
         if (!isEntityExits(id, roles))
             throw new EntityDoesNotExist();

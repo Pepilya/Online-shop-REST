@@ -1,19 +1,19 @@
 package com.springboottest.app.service;
 
 import com.springboottest.app.model.Role;
-import com.springboottest.app.model.User;
+import com.springboottest.app.model.CustomUser;
 
 import java.util.List;
 
 public interface AdminService {
 
-    List<User> getAllUsers();
+    List<CustomUser> getAllUsers();
 
-    User getUserById(int id);
+    CustomUser getUserById(int id);
 
-    User addUser(User user, List<Integer> roles);
+    CustomUser addUser(CustomUser user, List<Integer> roles);
 
-    User update(User user, int id, List<Integer> roles);
+    CustomUser update(CustomUser user, int id, List<Integer> roles);
 
     Integer delete(int id);
 

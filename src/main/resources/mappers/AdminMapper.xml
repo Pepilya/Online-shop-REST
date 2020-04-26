@@ -1,7 +1,7 @@
 <!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.springboottest.app.mappers.AdminMapper">
 
-    <resultMap id="UserResultMap" type="user">
+    <resultMap id="UserResultMap" type="customUser">
         <id property="id" column="user_id" javaType="_int"/>
         <result property="login" column="user_login" javaType="String"/>
         <result property="password" column="user_password" javaType="String"/>
@@ -36,6 +36,20 @@
          LEFT JOIN roles
                 ON roles.id = user_role.role_id
         WHERE users.id = #{id};
+    </select>
+
+    <select id="getUserByLogin" resultMap="UserResultMap">
+        SELECT users.id AS user_id,
+        users.login AS user_login,
+        users.password AS user_password,
+        roles.id AS role_id,
+        roles.name AS role_name
+         FROM users
+         LEFT JOIN user_role
+                ON users.id = user_role.user_id
+         LEFT JOIN roles
+                ON roles.id = user_role.role_id
+        WHERE users.login = #{login};
     </select>
 
     <select id="addUser" resultType="_int">

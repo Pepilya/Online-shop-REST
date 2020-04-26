@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import static com.springboottest.app.config.JwtFilter.AUTH_TOKEN;
 
 @RestController
 @Validated
@@ -17,29 +18,34 @@ public class EditorController {
     private final EditorService editorService;
 
     @GetMapping("/product")
-    public List<Product> getListOfProducts(@RequestParam(required = false) String searchQuery,
+    public List<Product> getListOfProducts(@RequestHeader(AUTH_TOKEN) String token,
+                                           @RequestParam(required = false) String searchQuery,
                                            @RequestParam (required = false) Integer minPrice,
                                            @RequestParam (required = false) Integer maxPrice) {
         return editorService.getListOfProducts(searchQuery, minPrice, maxPrice);
     }
 
     @GetMapping("/product/{id}")
-    public Product getProductById(@PathVariable int id) {
+    public Product getProductById(@RequestHeader(AUTH_TOKEN) String token,
+                                  @PathVariable int id) {
         return editorService.getProductById(id);
     }
 
     @PostMapping("/product")
-    public Product addProduct(@RequestBody Product product) {
+    public Product addProduct(@RequestHeader(AUTH_TOKEN) String token,
+                              @RequestBody Product product) {
         return editorService.addProduct(product);
     }
 
     @PutMapping("/product/{id}")
-    public Product updateProduct(@PathVariable int id, Product product) {
+    public Product updateProduct(@RequestHeader(AUTH_TOKEN) String token,
+                                 @PathVariable int id, Product product) {
         return editorService.updateProduct(id, product);
     }
 
     @DeleteMapping("/product/{id}")
-    public Product deleteProduct(@PathVariable int id) {
+    public Product deleteProduct(@RequestHeader(AUTH_TOKEN) String token,
+                                 @PathVariable int id) {
         return editorService.deleteProduct(id);
     }
 }

@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
-public class User {
+public class CustomUser {
     private int id;
     @NotNull
     private String login;
